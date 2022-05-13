@@ -5,12 +5,7 @@ const createError = require('http-errors')
 const morgan = require('morgan')
 const helmet = require('helmet')
 
-const categoryRouter = require('./src/routes/category')
-const productRouter = require('./src/routes/product')
-const orderRouter = require('./src/routes/order')
-const sellerRourter = require('./src/routes/seller')
-const customerRouter = require('./src/routes/customer')
-const checkoutRouter = require('./src/routes/checkout')
+const mainRouter = require('./src/routes')
 
 const app = express()
 const PORT = process.env.PORT || 5000
@@ -20,12 +15,7 @@ app.use(cors())
 app.use(morgan('dev'))
 app.use(helmet())
 
-app.use('/product', productRouter)
-app.use('/category', categoryRouter)
-app.use('/order', orderRouter)
-app.use('/seller', sellerRourter)
-app.use('/customer', customerRouter)
-app.use('/checkout', checkoutRouter)
+app.use('/v1', mainRouter)
 
 app.all('*', (req, res, next) => {
   next(new createError.NotFound())

@@ -1,78 +1,62 @@
+/* eslint-disable camelcase */
 const createError = require('http-errors')
 const orderModels = require('../models/order')
 const errServ = createError.InternalServerError()
+const commonHelper = require('../helper/common')
 
-const getOrder = (req, res, next) => {
-  orderModels.selectOrder()
+exports.getOrder = async (req, res, next) => {
+  try {
+    const result = await orderModels.selectOrder()
 
-    .then((result) => {
-      res.status(200).json({
-        data: result.rows
-      })
-    })
-    .catch(() => {
-      next(errServ)
-    })
-}
-
-const insertOrder = (req, res, next) => {
-  const { color, size, quantity, productId } = req.body
-  const data = {
-    color,
-    size,
-    quantity,
-    productId
+    commonHelper.response(res, result, 200, 'Get data success')
+  } catch (error) {
+    next(errServ)
   }
-  orderModels.insertOrder(data)
-
-    .then(() => {
-      res.status(201).json({
-        message: 'data berhasil ditambahkan'
-      })
-    })
-    .catch(() => {
-      next(errServ)
-    })
 }
 
-const updateOrder = (req, res, next) => {
-  const id = req.params.id
-  const { color, size, quantity, productId } = req.body
-  const data = {
-    color,
-    size,
-    quantity,
-    productId,
-    id
+exports.insertOrder = async (req, res, next) => {
+  try {
+    const { color, size, quantity, product_id } = req.body
+    const data = {
+      color,
+      size,
+      quantity,
+      product_id
+    }
+    await orderModels.insertOrder(data)
+
+    commonHelper.response(res, data, 201, 'Insert data success')
+  } catch (error) {
+    next(errServ)
   }
-  orderModels.updateOrder(data)
-    .then(() => {
-      res.status(200).json({
-        message: 'data berhasil diupdate'
-      })
-    })
-    .catch(() => {
-      next(errServ)
-    })
 }
 
-const deleteOrder = (req, res, next) => {
-  const id = req.params.id
-  orderModels.deleteOrder(id)
+exports.updateOrder = async (req, res, next) => {
+  try {
+    const id = req.params.id
+    const { color, size, quantity, product_id } = req.body
+    const data = {
+      color,
+      size,
+      quantity,
+      product_id,
+      id
+    }
+    await orderModels.updateOrder(data)
 
-    .then(() => {
-      res.status(200).json({
-        message: 'data berhasil dihapus'
-      })
-    })
-    .catch(() => {
-      next(errServ)
-    })
+    commonHelper.response(res, data, 200, 'Update data success')
+  } catch (error) {
+    next(errServ)
+  }
 }
 
-module.exports = {
-  getOrder,
-  insertOrder,
-  updateOrder,
-  deleteOrder
+exports.deleteOrder = async (req, res, next) => {
+  try {
+    const id = req.params.id
+    await orderModels.deleteOrder(id)
+
+    commonHelper.response(res, id, 200, 'Delete data success')
+  } catch (error) {
+    next(errServ)
+  }
 }

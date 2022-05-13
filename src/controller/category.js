@@ -1,83 +1,63 @@
 const createError = require('http-errors')
 const categoryModels = require('../models/category')
 const errServ = new createError.InternalServerError()
+const commonHelper = require('../helper/common')
 
-const getCategory = (req, res, next) => {
-  const page = parseInt(req.query.page) || 1
-  const limit = parseInt(req.query.limit) || 5
-  const offset = (page - 1) * limit
-  categoryModels.select({ offset, limit })
+exports.getCategory = async (req, res, next) => {
+  try {
+    const page = parseInt(req.query.page) || 1
+    const limit = parseInt(req.query.limit) || 5
+    const offset = (page - 1) * limit
+    const result = await categoryModels.select({ offset, limit })
 
-  // const categoryModels.countCategory()
-  // const totalData = parseInt(count.total)
-  // const totalPage = Math.ceil(totalData / limit)
+    const { rows: [count] } = await categoryModels.countCategory()
+    const totalData = parseInt(count.total)
+    const totalPage = Math.ceil(totalData / limit)
 
-    .then((result) => {
-      res.status(200).json({
-      //   pagination: {
-      //     currentPage: page,
-      //     limit,
-      //     totalData,
-      //     totalPage
-      //   },
-        data: result.rows
-      })
-    })
-    .catch(() => {
-      next(errServ)
-    })
-}
+    const pagination = {
+      currentPage: page,
+      limit,
+      totalData,
+      totalPage
+    }
 
-const insertCategory = (req, res, next) => {
-  const name = req.body
-  categoryModels.insert(name)
-
-    .then(() => {
-      res.status(201).json({
-        message: 'data berhasil ditambahkan'
-      })
-    })
-    .catch(() => {
-      next(errServ)
-    })
-}
-
-const updateCategory = (req, res, next) => {
-  const id = req.params.id
-  const name = req.body.name
-  const data = {
-    id,
-    name
+    commonHelper.response(res, result, 200, 'Get data success', pagination)
+  } catch (error) {
+    next(errServ)
   }
-  categoryModels.update(data)
-
-    .then(() => {
-      res.status(200).json({
-        message: 'data berhasil diupdate'
-      })
-    })
-    .catch(() => {
-      next(errServ)
-    })
 }
 
-const deleteCategory = (req, res, next) => {
-  const id = req.params.id
-  categoryModels.deleteCategory(id)
-
-    .then(() => {
-      res.status(200).json({
-        message: 'data berhasil dihapus'
-      })
-    })
-    .catch(() => {
-      next(errServ)
-    })
+exports.insertCategory = async (req, res, next) => {
+  try {
+    const name = req.body
+    await categoryModels.insert(name)
+    commonHelper.response(res, name, 201, 'Insert data success')
+  } catch (error) {
+    next(errServ)
+  }
 }
 
-module.exports = {
-  getCategory,
-  insertCategory,
-  updateCategory,
-  deleteCategory
+exports.updateCategory = async (req, res, next) => {
+  try {
+    const id = req.params.id
+    const name = req.body.name
+    const data = {
+      id,
+      name
+    }
+    await categoryModels.update(data)
+    commonHelper.response(res, data, 200, 'Update data success')
+  } catch (error) {
+    next(errServ)
+  }
+}
+
+exports.deleteCategory = async (req, res, next) => {
+  try {
+    const id = req.params.id
+    await categoryModels.deleteCategory(id)
+    commonHelper.response(res, id, 200, 'Delete data success')
+  } catch (error) {
+    next(errServ)
+  }
 }
