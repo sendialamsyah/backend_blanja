@@ -17,7 +17,7 @@ const selectProductById = (id) => {
   return new Promise((resolve, reject) => {
     pool.query('SELECT product.*, category.name FROM product INNER JOIN category ON product.category_id = category.id WHERE product.id = $1', [id], (err, result) => {
       if (!err) {
-        resolve(result.rows)
+        resolve(result)
       } else {
         reject(new Error(err))
       }
@@ -25,9 +25,9 @@ const selectProductById = (id) => {
   })
 }
 
-const insertProduct = ({ name, description, price, stock, category_id }) => {
+const insertProduct = ({ name, description, price, stock, photo, category_id }) => {
   return new Promise((resolve, reject) => {
-    pool.query('INSERT INTO product(name, description, price, stock, category_id)VALUES($1, $2, $3, $4, $5)', [name, description, price, stock, category_id], (err, result) => {
+    pool.query('INSERT INTO product(name, description, price, stock, photo, category_id)VALUES($1, $2, $3, $4, $5, $6)', [name, description, price, stock, photo, category_id], (err, result) => {
       if (!err) {
         resolve(result)
       } else {

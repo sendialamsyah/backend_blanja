@@ -3,6 +3,7 @@ const createError = require('http-errors')
 const productModels = require('../models/product')
 const errServ = new createError.InternalServerError()
 const commonHelper = require('../helper/common')
+// const client = require('../config/redis')
 
 exports.getProduct = async (req, res, next) => {
   try {
@@ -25,7 +26,8 @@ exports.getProduct = async (req, res, next) => {
       currentPage: page,
       limit,
       totalData,
-      totalPage
+      totalPage,
+      username: req.payload
     }
 
     commonHelper.response(res, result, 200, 'Get data success', pagination)
@@ -38,9 +40,10 @@ exports.getProduct = async (req, res, next) => {
 exports.detailProduct = async (req, res, next) => {
   try {
     const id = req.params.id
-    const result = await productModels.selectProductById(id)
+    const { rows: [product] } = await productModels.selectProductById(id)
+    // client.setEx(`product/${id}`, 60 * 60, JSON.stringify(product))
 
-    commonHelper.response(res, result, 200, 'Get data by id success')
+    commonHelper.response(res, product, 200, 'Get data from database')
   } catch (error) {
     console.log(error)
     next(errServ)
@@ -55,6 +58,7 @@ exports.insertProduct = async (req, res, next) => {
       description,
       price,
       stock,
+      photo: `${req.get('host')}/img/${req.file.filename}`,
       category_id
     }
     await productModels.insertProduct(data)
