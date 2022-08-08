@@ -5,6 +5,7 @@ const productRouter = require('./product')
 const orderRouter = require('./checkout')
 const usersRouter = require('./auth/users')
 const cartRouter = require('./cart.js')
+const transactionRouter = require('./transaction')
 
 router
   .use('/product', productRouter)
@@ -12,4 +13,5 @@ router
   .use('/checkout', orderRouter)
   .use('/users', usersRouter)
   .use('/cart', cartRouter)
+  .use('/transaction', transactionRouter)
 module.exports = router

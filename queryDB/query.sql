@@ -31,6 +31,15 @@ CREATE TABLE checkout(
     cart_id INT NOT NULL,
     id_user VARCHAR(255) NOT NULL,
     total INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP
+);
+
+//transaction
+CREATE TABLE transaction(
+    id INT PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY,
+    checkout_id INT NOT NULL,
+    userId VARCHAR(255) NOT NULL,
     address VARCHAR(255),
     status INT NOT NULL DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

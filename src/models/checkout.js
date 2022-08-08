@@ -17,11 +17,11 @@ const selectCheckout = ({ limit, offset, id_user }) => {
   })
 }
 
-const insertCheckout = ({ cart_id, id_user, address, total }) => {
+const insertCheckout = ({ cart_id, id_user, total }) => {
   return new Promise((resolve, reject) => {
     pool.query(
-      'INSERT INTO checkout(cart_id, id_user, address, total)VALUES($1, $2, $3, $4)',
-      [cart_id, id_user, address, total],
+      'INSERT INTO checkout(cart_id, id_user, total)VALUES($1, $2, $3)',
+      [cart_id, id_user, total],
       (err, result) => {
         if (!err) {
           resolve(result)
@@ -36,16 +36,14 @@ const insertCheckout = ({ cart_id, id_user, address, total }) => {
 const update = ({
   cart_id,
   id_user,
-  address,
   total,
-  status,
   updated_at,
   id
 }) => {
   return new Promise((resolve, reject) => {
     pool.query(
-      'UPDATE checkout SET cart_id = COALESCE($1, cart_id), id_user = COALESCE($2, id_user), address = COALESCE($3, address), total = COALESCE($4, total), status = COALESCE($5, status), updated_at = COALESCE($6, updated_at) WHERE id = $7',
-      [cart_id, id_user, address, total, status, updated_at, id],
+      'UPDATE checkout SET cart_id = COALESCE($1, cart_id), id_user = COALESCE($2, id_user), total = COALESCE($3, total), updated_at = COALESCE($4, updated_at) WHERE id = $4',
+      [cart_id, id_user, total, updated_at, id],
       (err, result) => {
         if (!err) {
           resolve(result)

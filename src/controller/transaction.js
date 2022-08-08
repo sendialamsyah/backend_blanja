@@ -1,20 +1,20 @@
 /* eslint-disable camelcase */
 const createError = require('http-errors')
-const checkoutModels = require('../models/checkout')
+const transactionModels = require('../models/transaction')
 const errServ = new createError.InternalServerError()
 const commonHelper = require('../helper/common')
 
-exports.getCheckout = async (req, res, next) => {
+exports.getTransaction = async (req, res, next) => {
   try {
     const limit = parseInt(req.query.limit) || 5
     const page = parseInt(req.query.page) || 1
     const offset = (page - 1) * limit
 
-    const id_user = req.decoded.id
+    const userId = req.decoded.id
 
-    const result = await checkoutModels.selectCheckout({ limit, offset, id_user })
+    const result = await transactionModels.selectTransaction({ limit, offset, userId })
 
-    const { rows: [count] } = await checkoutModels.countCheckout(id_user)
+    const { rows: [count] } = await transactionModels.countTransaction(userId)
     const totalData = parseInt(count.total)
     const totalPage = Math.ceil(totalData / limit)
 
@@ -32,17 +32,17 @@ exports.getCheckout = async (req, res, next) => {
   }
 }
 
-exports.insertCheckout = async (req, res, next) => {
+exports.insertTransaction = async (req, res, next) => {
   try {
-    const id_user = req.decoded.id
-    const { cart_id, total } = req.body
+    const userId = req.decoded.id
+    const { checkout_id, address } = req.body
 
     const data = {
-      cart_id,
-      id_user,
-      total
+      checkout_id,
+      userId,
+      address
     }
-    await checkoutModels.insertCheckout(data)
+    await transactionModels.insertTransaction(data)
 
     commonHelper.response(res, data, 201, 'Insert data success')
   } catch (error) {
@@ -51,20 +51,21 @@ exports.insertCheckout = async (req, res, next) => {
   }
 }
 
-exports.updateCheckout = async (req, res, next) => {
+exports.updateTransaction = async (req, res, next) => {
   try {
     const id = req.params.id
-    const id_user = req.decoded.id
+    const userId = req.decoded.id
     const updated_at = new Date()
-    const { cart_id, total } = req.body
+    const { checkout_id, address, status } = req.body
     const data = {
-      cart_id,
-      id_user,
-      total,
+      checkout_id,
+      userId,
+      address,
+      status,
       updated_at,
       id
     }
-    await checkoutModels.update(data)
+    await transactionModels.update(data)
 
     commonHelper.response(res, data, 201, 'update data success')
   } catch (error) {
@@ -73,10 +74,10 @@ exports.updateCheckout = async (req, res, next) => {
   }
 }
 
-exports.deleteCheckout = async (req, res, next) => {
+exports.deleteTransaction = async (req, res, next) => {
   try {
     const id = req.params.id
-    await checkoutModels.deleteCheckout(id)
+    await transactionModels.deleteTransaction(id)
 
     commonHelper.response(res, id, 200, 'Delete data success')
   } catch (error) {
