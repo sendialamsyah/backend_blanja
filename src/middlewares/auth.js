@@ -24,13 +24,20 @@ const protect = (req, res, next) => {
   }
 }
 
-const isAdmin = (req, res, next) => {
-  if (req.decoded.role !== 'admin') {
-    return next(createError(400, 'admin only'))
+const isSeller = (req, res, next) => {
+  if (req.decoded.role !== 'seller') {
+    return next(createError(400, 'seller only'))
+  }
+  next()
+}
+const isUser = (req, res, next) => {
+  if (req.decoded.role !== 'user') {
+    return next(createError(400, 'user only'))
   }
   next()
 }
 module.exports = {
   protect,
-  isAdmin
+  isSeller,
+  isUser
 }

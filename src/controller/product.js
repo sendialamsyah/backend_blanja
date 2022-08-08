@@ -4,15 +4,16 @@ const productModels = require('../models/product')
 const errServ = new createError.InternalServerError()
 const commonHelper = require('../helper/common')
 // const client = require('../config/redis')
+const cloudinary = require('../helper/cloudinary')
 
 exports.getProduct = async (req, res, next) => {
   try {
-    const limit = parseInt(req.query.limit) || 5
+    const limit = parseInt(req.query.limit) || 1
     const page = parseInt(req.query.page) || 1
     const offset = (page - 1) * limit
 
-    const sortby = req.query.sortby || 'price'
-    const sort = req.query.sort || 'ASC'
+    const sortby = req.query.sortby || 'id'
+    const sort = req.query.sort || ''
 
     const search = req.query.search || ''
 
@@ -53,18 +54,25 @@ exports.detailProduct = async (req, res, next) => {
 exports.insertProduct = async (req, res, next) => {
   try {
     const { name, description, price, stock, category_id } = req.body
+    const img = req.file.path
+    const ress = await cloudinary.uploader.upload(img, {
+      folder: 'blanja'
+    })
+
     const data = {
       name,
       description,
       price,
       stock,
-      photo: `${req.get('host')}/img/${req.file.filename}`,
-      category_id
+      // photo: `${req.get('host')}/img/${req.file.filename}`,
+      photo: ress.url,
+      category_id: category_id || 1
     }
     await productModels.insertProduct(data)
 
     commonHelper.response(res, data, 201, 'Insert data success')
   } catch (error) {
+    console.log(error)
     next(errServ)
   }
 }
@@ -73,17 +81,25 @@ exports.updateProduct = async (req, res, next) => {
   try {
     const id = req.params.id
     const { name, description, price, stock, category_id } = req.body
+    console.log(req.file)
+    const img = req.file.path
+    const ress = await cloudinary.uploader.upload(img, {
+      folder: 'blanja'
+    })
+
     const data = {
       id,
       name,
       description,
       price,
       stock,
+      // photo: `${req.get('host')}/img/${req.file.filename}`,
+      photo: ress.url,
       category_id
     }
-    await productModels.updateProduct(data)
+    await productModels.update(data)
 
-    commonHelper.response(res, data, 200, 'Update data success')
+    commonHelper.response(res, data, 201, 'update data success')
   } catch (error) {
     console.log(error)
     next(errServ)

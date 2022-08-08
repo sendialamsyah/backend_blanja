@@ -15,7 +15,7 @@ const selectProduct = ({ limit, offset, sortby, sort, search }) => {
 
 const selectProductById = (id) => {
   return new Promise((resolve, reject) => {
-    pool.query('SELECT product.*, category.name FROM product INNER JOIN category ON product.category_id = category.id WHERE product.id = $1', [id], (err, result) => {
+    pool.query('SELECT product.*, category.name as nameCategory FROM product INNER JOIN category ON product.category_id = category.id WHERE product.id = $1', [id], (err, result) => {
       if (!err) {
         resolve(result)
       } else {
@@ -37,9 +37,9 @@ const insertProduct = ({ name, description, price, stock, photo, category_id }) 
   })
 }
 
-const updateProduct = ({ name, description, price, stock, category_id, id }) => {
+const update = ({ name, description, price, stock, photo, category_id, id }) => {
   return new Promise((resolve, reject) => {
-    pool.query('UPDATE product SET name = COALESCE($1, name), description = COALESCE($2, description), price = COALESCE($3, price), stock = COALESCE($4, stock), category_id = COALESCE($5, category_id)WHERE id = $6', [name, description, price, stock, category_id, id], (err, result) => {
+    pool.query('UPDATE product SET name = COALESCE($1, name), description = COALESCE($2, description), price = COALESCE($3, price), stock = COALESCE($4, stock), photo = COALESCE($5, photo),  category_id = COALESCE($6, category_id) WHERE id = $7', [name, description, price, stock, photo, category_id, id], (err, result) => {
       if (!err) {
         resolve(result)
       } else {
@@ -76,7 +76,7 @@ module.exports = {
   selectProduct,
   selectProductById,
   insertProduct,
-  updateProduct,
+  update,
   deleteProduct,
   countProduct
 }
