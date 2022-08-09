@@ -10,7 +10,7 @@ exports.getTransaction = async (req, res, next) => {
     const page = parseInt(req.query.page) || 1
     const offset = (page - 1) * limit
 
-    const sortby = req.query.sortby || 'created_at'
+    const sortby = req.query.sortby || 'date'
     const sort = req.query.sort || 'DESC'
 
     const userId = req.decoded.id

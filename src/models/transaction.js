@@ -4,7 +4,7 @@ const pool = require('../config/db')
 const selectTransaction = ({ limit, offset, userId, sortby, sort }) => {
   return new Promise((resolve, reject) => {
     pool.query(
-      `SELECT transaction.*, product.name as product_name, product.photo, product.price, users.fullname, users.address as address_user, checkout.total, checkout.cart_id, carts.product_id FROM transaction INNER JOIN users ON transaction.userId = users.id INNER JOIN checkout ON checkout.id = transaction.checkout_id INNER JOIN carts ON checkout.cart_id = carts.id INNER JOIN product ON carts.product_id = product.id WHERE userId = $1 ORDER BY ${sortby} ${sort} LIMIT $2 OFFSET $3`,
+      `SELECT transaction.id, transaction.checkout_id, transaction.userId, transaction.address, transaction.status, to_char(transaction.created_at, 'FMDay, DD FMMonth YYYY') as date, product.name as product_name, product.photo, product.price, users.fullname, users.address as address_user, checkout.total, checkout.cart_id, carts.product_id FROM transaction INNER JOIN users ON transaction.userId = users.id INNER JOIN checkout ON checkout.id = transaction.checkout_id INNER JOIN carts ON checkout.cart_id = carts.id INNER JOIN product ON carts.product_id = product.id WHERE userId = $1 ORDER BY ${sortby} ${sort} LIMIT $2 OFFSET $3`,
       [userId, limit, offset],
       (err, result) => {
         if (!err) {
