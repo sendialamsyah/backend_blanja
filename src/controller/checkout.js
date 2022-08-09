@@ -10,9 +10,12 @@ exports.getCheckout = async (req, res, next) => {
     const page = parseInt(req.query.page) || 1
     const offset = (page - 1) * limit
 
+    const sortby = req.query.sortby || 'created_at'
+    const sort = req.query.sort || 'DESC'
+
     const id_user = req.decoded.id
 
-    const result = await checkoutModels.selectCheckout({ limit, offset, id_user })
+    const result = await checkoutModels.selectCheckout({ limit, offset, id_user, sortby, sort })
 
     const { rows: [count] } = await checkoutModels.countCheckout(id_user)
     const totalData = parseInt(count.total)

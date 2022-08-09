@@ -10,9 +10,12 @@ exports.getTransaction = async (req, res, next) => {
     const page = parseInt(req.query.page) || 1
     const offset = (page - 1) * limit
 
+    const sortby = req.query.sortby || 'created_at'
+    const sort = req.query.sort || 'DESC'
+
     const userId = req.decoded.id
 
-    const result = await transactionModels.selectTransaction({ limit, offset, userId })
+    const result = await transactionModels.selectTransaction({ limit, offset, userId, sortby, sort })
 
     const { rows: [count] } = await transactionModels.countTransaction(userId)
     const totalData = parseInt(count.total)

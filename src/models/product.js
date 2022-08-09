@@ -39,7 +39,7 @@ const insertProduct = ({ name, description, price, stock, photo, category_id }) 
 
 const update = ({ name, description, price, stock, photo, category_id, id }) => {
   return new Promise((resolve, reject) => {
-    pool.query('UPDATE product SET name = COALESCE($1, name), description = COALESCE($2, description), price = COALESCE($3, price), stock = COALESCE($4, stock), photo = COALESCE($5, photo),  category_id = COALESCE($6, category_id) WHERE id = $7', [name, description, price, stock, photo, category_id, id], (err, result) => {
+    pool.query('UPDATE product SET name = COALESCE($1, name), description = COALESCE($2, description), price = COALESCE($3, price), stock = COALESCE($4, stock), photo = COALESCE($5, photo), category_id = COALESCE($6, category_id) WHERE id = $7', [name, description, price, stock, photo, category_id, id], (err, result) => {
       if (!err) {
         resolve(result)
       } else {

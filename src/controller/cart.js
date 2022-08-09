@@ -10,9 +10,12 @@ exports.getCart = async (req, res, next) => {
     const page = parseInt(req.query.page) || 1
     const offset = (page - 1) * limit
 
+    const sortby = req.query.sortby || 'created_at'
+    const sort = req.query.sort || 'DESC'
+
     const user_id = req.decoded.id
 
-    const result = await cartModels.selectCart({ limit, offset, user_id })
+    const result = await cartModels.selectCart({ limit, offset, user_id, sortby, sort })
 
     const { rows: [count] } = await cartModels.countCart(user_id)
     const totalData = parseInt(count.total)

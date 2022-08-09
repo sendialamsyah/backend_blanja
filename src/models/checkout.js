@@ -1,10 +1,10 @@
 /* eslint-disable camelcase */
 const pool = require('../config/db')
 
-const selectCheckout = ({ limit, offset, id_user }) => {
+const selectCheckout = ({ limit, offset, id_user, sortby, sort }) => {
   return new Promise((resolve, reject) => {
     pool.query(
-      'SELECT checkout.*, product.name as product_name, product.photo, product.price, users.fullname, users.address, carts.product_id, carts.quantity FROM checkout INNER JOIN users ON checkout.id_user = users.id INNER JOIN carts ON checkout.cart_id = carts.id INNER JOIN product ON carts.product_id = product.id WHERE id_user = $1 LIMIT $2 OFFSET $3',
+      `SELECT checkout.*, product.name as product_name, product.photo, product.price, users.fullname, users.address, carts.product_id, carts.quantity FROM checkout INNER JOIN users ON checkout.id_user = users.id INNER JOIN carts ON checkout.cart_id = carts.id INNER JOIN product ON carts.product_id = product.id WHERE id_user = $1 ORDER BY ${sortby} ${sort} LIMIT $2 OFFSET $3`,
       [id_user, limit, offset],
       (err, result) => {
         if (!err) {
