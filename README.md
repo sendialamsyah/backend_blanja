@@ -81,6 +81,7 @@ Contributions are what make the open source community such an amazing place to b
 ## Related Project
 * [`Blanja E-commerce App`](https://blanja-ku.vercel.app/)
 * [`Blanja E-commerce Rest API`](https://tokokku-web2.herokuapp.com/)
+* [`Blanja E-commerce Frontend Repository`](https://github.com/sendialamsyah/frontend_blanja)
 
 
 <!-- CONTACT -->
