@@ -38,13 +38,14 @@ exports.getCheckout = async (req, res, next) => {
 exports.insertCheckout = async (req, res, next) => {
   try {
     const id_user = req.decoded.id
-    const { cart_id, total, product_id } = req.body
+    const { cart_id, total, product_id, quantity } = req.body
 
     const data = {
       cart_id,
       id_user,
       total,
-      product_id
+      product_id,
+      quantity
     }
     await checkoutModels.insertCheckout(data)
 
@@ -60,12 +61,13 @@ exports.updateCheckout = async (req, res, next) => {
     const id = req.params.id
     const id_user = req.decoded.id
     const updated_at = new Date()
-    const { cart_id, total, product_id } = req.body
+    const { cart_id, total, product_id, quantity } = req.body
     const data = {
       cart_id,
       id_user,
       total,
       product_id,
+      quantity,
       updated_at,
       id
     }
