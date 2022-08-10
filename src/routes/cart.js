@@ -1,12 +1,12 @@
 const express = require('express')
 const router = express.Router()
 const cartController = require('../controller/cart')
-const { protect, isUser } = require('../middlewares/auth')
+const { protect } = require('../middlewares/auth')
 
 router
-  .get('/', protect, isUser, cartController.getCart)
-  .post('/', protect, isUser, cartController.insertCart)
-  .put('/:id', protect, isUser, cartController.updateCart)
-  .delete('/:id', protect, isUser, cartController.deleteCart)
+  .get('/', protect, cartController.getCart)
+  .post('/', protect, cartController.insertCart)
+  .put('/:id', protect, cartController.updateCart)
+  .delete('/:id', protect, cartController.deleteCart)
 
 module.exports = router

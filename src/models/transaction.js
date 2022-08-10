@@ -4,7 +4,7 @@ const pool = require('../config/db')
 const selectTransaction = ({ limit, offset, userId, sortby, sort }) => {
   return new Promise((resolve, reject) => {
     pool.query(
-      `SELECT transaction.id, transaction.checkout_id, transaction.userId, transaction.address, transaction.status, to_char(transaction.created_at, 'FMDay, DD FMMonth YYYY') as date, product.name as product_name, product.photo, product.price, users.fullname, users.address as address_user, checkout.total, checkout.cart_id, carts.product_id FROM transaction INNER JOIN users ON transaction.userId = users.id INNER JOIN checkout ON checkout.id = transaction.checkout_id INNER JOIN carts ON checkout.cart_id = carts.id INNER JOIN product ON carts.product_id = product.id WHERE userId = $1 ORDER BY ${sortby} ${sort} LIMIT $2 OFFSET $3`,
+      `SELECT transaction.id, transaction.checkout_id, transaction.userId, transaction.address, transaction.status, transaction.product_id, transaction.total, to_char(transaction.created_at, 'FMDay, DD FMMonth YYYY') as date, product.name as product_name, product.photo, product.price, users.fullname, users.address as address_user FROM transaction INNER JOIN users ON transaction.userId = users.id INNER JOIN product ON transaction.product_id = product.id WHERE userId = $1 ORDER BY ${sortby} ${sort} LIMIT $2 OFFSET $3`,
       [userId, limit, offset],
       (err, result) => {
         if (!err) {
@@ -17,11 +17,11 @@ const selectTransaction = ({ limit, offset, userId, sortby, sort }) => {
   })
 }
 
-const insertTransaction = ({ checkout_id, userId, address }) => {
+const insertTransaction = ({ checkout_id, userId, address, product_id, total }) => {
   return new Promise((resolve, reject) => {
     pool.query(
-      'INSERT INTO transaction(checkout_id, userId, address)VALUES($1, $2, $3)',
-      [checkout_id, userId, address],
+      'INSERT INTO transaction(checkout_id, userId, address, product_id, total)VALUES($1, $2, $3, $4, $5)',
+      [checkout_id, userId, address, product_id, total],
       (err, result) => {
         if (!err) {
           resolve(result)
@@ -38,13 +38,15 @@ const update = ({
   userId,
   address,
   status,
+  product_id,
+  total,
   updated_at,
   id
 }) => {
   return new Promise((resolve, reject) => {
     pool.query(
-      'UPDATE transaction SET checkout_id = COALESCE($1, checkout_id), userId = COALESCE($2, userId), address = COALESCE($3, address), status = COALESCE($4, status), updated_at = COALESCE($5, updated_at) WHERE id = $6',
-      [checkout_id, userId, address, status, updated_at, id],
+      'UPDATE transaction SET checkout_id = COALESCE($1, checkout_id), userId = COALESCE($2, userId), address = COALESCE($3, address), status = COALESCE($4, status), product_id = COALESCE($5, product_id), total = COALESCE($6, total), updated_at = COALESCE($7, updated_at) WHERE id = $8',
+      [checkout_id, userId, address, status, product_id, total, updated_at, id],
       (err, result) => {
         if (!err) {
           resolve(result)

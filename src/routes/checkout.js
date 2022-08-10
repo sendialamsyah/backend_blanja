@@ -1,12 +1,12 @@
 const express = require('express')
 const router = express.Router()
 const checkoutController = require('../controller/checkout')
-const { protect, isUser } = require('../middlewares/auth')
+const { protect } = require('../middlewares/auth')
 
 router
-  .get('/', protect, isUser, checkoutController.getCheckout)
-  .post('/', protect, isUser, checkoutController.insertCheckout)
-  .put('/:id', protect, isUser, checkoutController.updateCheckout)
-  .delete('/:id', protect, isUser, checkoutController.deleteCheckout)
+  .get('/', protect, checkoutController.getCheckout)
+  .post('/', protect, checkoutController.insertCheckout)
+  .put('/:id', protect, checkoutController.updateCheckout)
+  .delete('/:id', protect, checkoutController.deleteCheckout)
 
 module.exports = router

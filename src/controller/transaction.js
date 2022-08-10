@@ -38,12 +38,14 @@ exports.getTransaction = async (req, res, next) => {
 exports.insertTransaction = async (req, res, next) => {
   try {
     const userId = req.decoded.id
-    const { checkout_id, address } = req.body
+    const { checkout_id, address, product_id, total } = req.body
 
     const data = {
       checkout_id,
       userId,
-      address
+      address,
+      product_id,
+      total
     }
     await transactionModels.insertTransaction(data)
 
@@ -59,12 +61,14 @@ exports.updateTransaction = async (req, res, next) => {
     const id = req.params.id
     const userId = req.decoded.id
     const updated_at = new Date()
-    const { checkout_id, address, status } = req.body
+    const { checkout_id, address, status, product_id, total } = req.body
     const data = {
       checkout_id,
       userId,
       address,
       status,
+      product_id,
+      total,
       updated_at,
       id
     }
