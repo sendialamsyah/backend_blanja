@@ -36,6 +36,7 @@ CREATE TABLE transaction(
     userId VARCHAR(255) NOT NULL,
     product_id INT NOT NULL,
     total INT,
+    quantity INT,
     address VARCHAR(255),
     status INT NOT NULL DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
