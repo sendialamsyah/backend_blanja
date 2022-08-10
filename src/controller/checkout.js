@@ -6,7 +6,7 @@ const commonHelper = require('../helper/common')
 
 exports.getCheckout = async (req, res, next) => {
   try {
-    const limit = parseInt(req.query.limit) || 5
+    const limit = parseInt(req.query.limit) || 1
     const page = parseInt(req.query.page) || 1
     const offset = (page - 1) * limit
 

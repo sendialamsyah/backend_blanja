@@ -25,6 +25,7 @@ CREATE TABLE checkout(
     id_user VARCHAR(255) NOT NULL,
     product_id INT NOT NULL,
     total INT NOT NULL,
+    quantity INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP
 );
